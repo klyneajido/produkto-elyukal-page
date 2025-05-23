@@ -1,5 +1,4 @@
 // src/app/layout.tsx
-"use client";
 import "./globals.css";
 
 export default function RootLayout({
@@ -15,3 +14,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+
