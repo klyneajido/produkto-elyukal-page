@@ -113,6 +113,9 @@
 }
 
 @layer base {
+  html {
+    font-family: var(--font-bricolage), system-ui, sans-serif;
+  }
   * {
     @apply border-border outline-ring/50;
   }
@@ -120,3 +123,4 @@
     @apply bg-background text-foreground;
   }
 }
+

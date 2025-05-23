@@ -1,4 +1,3 @@
-"use client";
 
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
@@ -217,3 +216,4 @@ export function BeamsBackground({
         </div>
     );
 }
+

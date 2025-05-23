@@ -1,13 +1,8 @@
 "use client";
-
-// AVOID this in components that render on both server and client
-// const randomValue = Math.random(); 
-// const currentTime = new Date().toLocaleString();
-
-// INSTEAD, use state and useEffect
 import { useEffect, useState } from "react";
 
 import { BeamsBackground } from "./ui/beams-background";
+
 
 export function HeroSection() {
   const [randomValue, setRandomValue] = useState(0);
@@ -19,6 +14,7 @@ export function HeroSection() {
   
   return (
     <section className="relative w-full h-screen overflow-hidden">
+     
       {/* Background */}
       <BeamsBackground className="absolute inset-0 z-0 pointer-events-none" />
 

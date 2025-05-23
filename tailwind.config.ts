@@ -11,6 +11,9 @@ module.exports = {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-bricolage)'],
+      },
       animation: {
         aurora: "aurora 60s linear infinite",
       },

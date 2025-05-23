@@ -1,142 +1,165 @@
 "use client"
 
 import * as React from "react"
-import { useState } from "react"
-import { motion, AnimatePresence } from "motion/react"
-import { Menu, X } from "lucide-react"
-import Image from "next/image"
+import Link from "next/link"
+import Image from 'next/image'
+import { Menu } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
-const Navbar1 = () => {
-  const [isOpen, setIsOpen] = useState(false)
+const components: { title: string; href: string; description: string }[] = [
+  {
+    title: "Alert Dialog",
+    href: "/docs/primitives/alert-dialog",
+    description: "A modal dialog that interrupts the user with important content and expects a response.",
+  },
+  {
+    title: "Hover Card",
+    href: "/docs/primitives/hover-card",
+    description: "For sighted users to preview content available behind a link.",
+  },
+  {
+    title: "Progress",
+    href: "/docs/primitives/progress",
+    description: "Displays an indicator showing the completion progress of a task.",
+  },
+  {
+    title: "Scroll-area",
+    href: "/docs/primitives/scroll-area",
+    description: "Visually or semantically separates content.",
+  },
+  {
+    title: "Tabs",
+    href: "/docs/primitives/tabs",
+    description: "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+  },
+  {
+    title: "Tooltip",
+    href: "/docs/primitives/tooltip",
+    description:
+      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
+  },
+]
 
-  const toggleMenu = () => setIsOpen(!isOpen)
+export function Navbar() {
+  const [isScrolled, setIsScrolled] = React.useState(false)
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
-    <div className="flex justify-center w-full py-6 px-4 ">
-      <div className="flex items-center justify-between px-12 py-6 bg-white/10 backdrop-blur-md rounded-full shadow-lg w-full max-w-4xl relative z-10">
-        <div className="flex items-center">
-          <motion.div
-            className="w-8 h-8 mr-6"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            whileHover={{ rotate: 10 }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div
-              className="w-16 h-16 mr-6 relative"
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              whileHover={{ rotate: 10 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Image
-                src="/images/logo_plain.png"
-                alt="Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </motion.div>
-
-          </motion.div>
-        </div>
+    <div
+      className={cn(
+        "fixed top-5 z-50 w-auto transition-all duration-300 self-center rounded-full px-3",
+        isScrolled
+          ? "bg-white/70 backdrop-blur-lg dark:bg-gray-950/80"
+          : "bg-white/30 backdrop-blur-sm dark:bg-gray-950/50",
+      )}
+    >
+      <div className="container flex h-16 items-center">
+        <Link href="/" className="flex items-center">
+          <Image src="/images/logo1.png" alt="Produkto Elyukal" width={40} height={40} className="rounded-full"/>
+        </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {["Home", "Features", "About", "Contact"].map((item) => (
-            <motion.div
-              key={item}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              whileHover={{ scale: 1.05 }}
-            >
-              <a href="#" className="text-sm text-gray-900 hover:text-gray-600 transition-colors font-medium">
-                {item}
-              </a>
-            </motion.div>
-          ))}
-        </nav>
+        <div className="hidden md:flex mx-5">
+          <div className="hidden md:flex items-center space-x-5">
+            <NavLink href="/">Home</NavLink>
+            <NavLink href="/about">About</NavLink>
+            <NavLink href="/services">How it works</NavLink>
+            <NavLink href="/portfolio">Testimonials</NavLink>
+            <NavLink href="/contact">Contact</NavLink>
+          </div>
+        </div>
 
-        {/* Desktop CTA Button */}
-        <motion.div
-          className="hidden md:block"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <a
-            href="#"
-            className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-black rounded-full hover:bg-gray-800 transition-colors"
-          >
-            Get Started
-          </a>
-        </motion.div>
+        {/* Mobile Navigation */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="backdrop-blur-lg bg-white/80 dark:bg-gray-950/80">
+              <nav className="flex flex-col gap-4 mt-8">
+                <Link href="/" className="text-lg font-medium">
+                  Home
+                </Link>
+                <Link href="/docs" className="text-lg font-medium">
+                  Documentation
+                </Link>
+                <Link href="/components" className="text-lg font-medium">
+                  Components
+                </Link>
+                <Link href="/examples" className="text-lg font-medium">
+                  Examples
+                </Link>
+                <Link href="/pricing" className="text-lg font-medium">
+                  Pricing
+                </Link>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
 
-        {/* Mobile Menu Button */}
-        <motion.button className="md:hidden flex items-center" onClick={toggleMenu} whileTap={{ scale: 0.9 }}>
-          <Menu className="h-6 w-6 text-gray-900" />
-        </motion.button>
       </div>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="fixed inset-0 bg-white z-50 pt-24 px-6 md:hidden"
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          >
-            <motion.button
-              className="absolute top-6 right-6 p-2"
-              onClick={toggleMenu}
-              whileTap={{ scale: 0.9 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <X className="h-6 w-6 text-gray-900" />
-            </motion.button>
-            <div className="flex flex-col space-y-6">
-              {["Home", "Pricing", "Docs", "Projects"].map((item, i) => (
-                <motion.div
-                  key={item}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 + 0.1 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <a href="#" className="text-base text-gray-900 font-medium" onClick={toggleMenu}>
-                    {item}
-                  </a>
-                </motion.div>
-              ))}
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                exit={{ opacity: 0, y: 20 }}
-                className="pt-6"
-              >
-                <a
-                  href="#"
-                  className="inline-flex items-center justify-center w-full px-5 py-3 text-base text-white bg-black rounded-full hover:bg-gray-800 transition-colors "
-                  onClick={toggleMenu}
-                >
-                  Get Started
-                </a>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }
 
+interface NavLinkProps {
+  href: string
+  children: React.ReactNode
+}
+const NavLink = ({ href, children }: NavLinkProps) => {
+  return (
+    <Link href="/" className="relative text-base font-medium text-gray-800 dark:text-gray-200 transition-colors duration-200 hover:text-gray-900 dark:hover:text-white group">
+      {children}
+      <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-rose-500 to-indigo-600 transform scale-x-0 origin-center transition-transform duration-300 ease-out group-hover:scale-x-100"/>
+    </Link>
+  )
+}
 
-export { Navbar1 }
+const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
+  ({ className, title, children, ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <a
+            ref={ref}
+            className={cn(
+              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              className,
+            )}
+            {...props}
+          >
+            <div className="text-sm font-medium leading-none">{title}</div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
+          </a>
+        </NavigationMenuLink>
+      </li>
+    )
+  },
+)
+ListItem.displayName = "ListItem"
