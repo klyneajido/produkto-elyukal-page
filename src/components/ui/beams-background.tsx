@@ -27,10 +27,8 @@ interface Beam {
 
 // Helper function to convert hex to HSL hue
 function hexToHue(hex: string): number {
-    // Remove the # if present
     hex = hex.replace(/^#/, '');
     
-    // Parse the hex values
     let r = parseInt(hex.substring(0, 2), 16) / 255;
     let g = parseInt(hex.substring(2, 4), 16) / 255;
     let b = parseInt(hex.substring(4, 6), 16) / 255;
@@ -58,9 +56,7 @@ function hexToHue(hex: string): number {
 function createBeam(width: number, height: number, colorMode: string, customColors?: string[]): Beam {
     const angle = -35 + Math.random() * 10;
     
-    let hue = 190 + Math.random() * 70; // Default hue
-    
-    // If using custom colors, pick one randomly
+    let hue = 190 + Math.random() * 70; 
     if (colorMode === "custom" && customColors && customColors.length > 0) {
         const randomColor = customColors[Math.floor(Math.random() * customColors.length)];
         hue = hexToHue(randomColor);
@@ -69,11 +65,11 @@ function createBeam(width: number, height: number, colorMode: string, customColo
     return {
         x: Math.random() * width * 1.5 - width * 0.25,
         y: Math.random() * height * 1.5 - height * 0.25,
-        width: 40 + Math.random() * 80, // Wider beams
+        width: 40 + Math.random() * 80, 
         length: height * 2.5,
         angle: angle,
         speed: 0.6 + Math.random() * 1.2,
-        opacity: 0.4 + Math.random() * 0.3, // Significantly increased opacity
+        opacity: 0.4 + Math.random() * 0.3,
         hue: hue,
         pulse: Math.random() * Math.PI * 2,
         pulseSpeed: 0.02 + Math.random() * 0.03,
@@ -82,7 +78,7 @@ function createBeam(width: number, height: number, colorMode: string, customColo
 
 export function BeamsBackground({
     className,
-    intensity = "strong", // Change default to strong for better visibility
+    intensity = "strong",
     colorMode = "custom",
     customColors = ["#ffffff", "#9058ff", "#FFF2AF"],
     bgColor = "bg-white",
@@ -90,9 +86,8 @@ export function BeamsBackground({
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const beamsRef = useRef<Beam[]>([]);
     const animationFrameRef = useRef<number>(0);
-    const MINIMUM_BEAMS = 20; // Increase number of beams
+    const MINIMUM_BEAMS = 20;
 
-    // Increase opacity values for all intensity levels
     const opacityMap: Record<string, number> = {
         subtle: 0.8, 
         medium: 0.10,  
@@ -136,17 +131,15 @@ export function BeamsBackground({
                 (Math.random() - 0.5) * spacing * 0.5;
             beam.width = 100 + Math.random() * 100;
             beam.speed = 0.5 + Math.random() * 0.4;
-            
-            // Use custom colors if specified
             if (colorMode === "custom" && customColors && customColors.length > 0) {
-                // Distribute colors evenly or pick randomly
+
                 const colorIndex = index % customColors.length;
                 beam.hue = hexToHue(customColors[colorIndex]);
             } else {
                 beam.hue = 190 + (index * 70) / totalBeams;
             }
             
-            beam.opacity = 0.5 + Math.random() * 0.3; // Significantly increased opacity
+            beam.opacity = 0.5 + Math.random() * 0.3; 
             return beam;
         }
 
@@ -155,10 +148,9 @@ export function BeamsBackground({
             ctx.translate(beam.x, beam.y);
             ctx.rotate((beam.angle * Math.PI) / 180);
 
-            // Calculate pulsing opacity with higher base value
             const pulsingOpacity =
                 beam.opacity *
-                (0.9 + Math.sin(beam.pulse) * 0.3) * // Increased pulsing effect
+                (0.9 + Math.sin(beam.pulse) * 0.3) * 
                 opacityMap[intensity];
 
             const gradient = ctx.createLinearGradient(0, 0, 0, beam.length);
@@ -167,17 +159,17 @@ export function BeamsBackground({
                 const colorIndex = Math.floor(beam.hue / 360 * customColors.length) % customColors.length;
                 const color = customColors[colorIndex];
                 
-                // Enhanced visibility for all colors on white background
+              
                 let beamColor = color;
                 
-                // Special handling for white beams
+            
                 if (color.toLowerCase() === "#ffffff" || color.toLowerCase() === "#fff") {
-                    beamColor = "#c8c8ff"; // More blue-tinted white for much better visibility
+                    beamColor = "#c8c8ff"; 
                 }
                 
                 // Enhance purple and yellow colors too
                 if (color.toLowerCase() === "#9058ff") {
-                    beamColor = "#7030ff"; // Slightly darker purple for better contrast
+                    beamColor = "#7030ff"; 
                 }
                 
                 if (color.toLowerCase() === "#F4F8D3") {
@@ -191,7 +183,7 @@ export function BeamsBackground({
                 gradient.addColorStop(0.9, `${beamColor}${Math.round(pulsingOpacity * 200).toString(16).padStart(2, '0')}`);
                 gradient.addColorStop(1, `${beamColor}00`);
             } else {
-                // Original HSL gradient with increased saturation and darkness
+                
                 gradient.addColorStop(0, `hsla(${beam.hue}, 100%, 45%, 0)`);
                 gradient.addColorStop(0.1, `hsla(${beam.hue}, 100%, 45%, ${pulsingOpacity * 0.8})`);
                 gradient.addColorStop(0.4, `hsla(${beam.hue}, 100%, 45%, ${pulsingOpacity * 1.5})`);
@@ -209,14 +201,14 @@ export function BeamsBackground({
             if (!canvas || !ctx) return;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.filter = "blur(30px)"; // Reduced blur for sharper beams
+            ctx.filter = "blur(30px)"; 
 
             const totalBeams = beamsRef.current.length;
             beamsRef.current.forEach((beam, index) => {
                 beam.y -= beam.speed;
                 beam.pulse += beam.pulseSpeed;
 
-                // Reset beam when it goes off screen
+               
                 if (beam.y + beam.length < -100) {
                     resetBeam(beam, index, totalBeams);
                 }
